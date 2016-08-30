@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"github.com/WeiZhang555/tabwriter"
 	"log"
 	"os"
 	"strings"
@@ -21,9 +22,10 @@ func main() {
 	}
 
 	for _, sheet := range xlFile.Sheets {
+		w := tabwriter.NewWriter(os.Stdout, 0, 4, 0, '.', tabwriter.Debug)
 		for _, row := range sheet.Rows {
-			if (row == nil) {
-				continue;
+			if row == nil {
+				continue
 			}
 			cels := make([]string, len(row.Cells))
 			for i, cell := range row.Cells {
@@ -34,7 +36,8 @@ func main() {
 				s = strings.Replace(s, "\t", "\\t", -1)
 				cels[i] = s
 			}
-			fmt.Printf("[%s] %s\n", sheet.Name, strings.Join(cels, "\t"))
+			fmt.Fprintf(w, "[%s] %s\n", sheet.Name, strings.Join(cels, "\t"))
 		}
+		w.Flush()
 	}
 }
